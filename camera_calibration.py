@@ -29,7 +29,6 @@ def calibrate(dir):
     files=[]
     size = None
     for image in sorted(images):
-        print(image)
         img = cv2.imread(image)
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         size = gray.shape[::-1]
@@ -46,12 +45,9 @@ def calibrate(dir):
     cv2.destroyWindow(dir)
     numpy.savez_compressed(f, files=files, objpoints=objpoints, imgpoints=imgpoints, size=size)
     return files, objpoints, imgpoints, size
-print('left')
 (lfiles, lobjpoints, limgpoints, lsize) = calibrate(leftdir)
-print('right')
 (rfiles, robjpoints, rimgpoints, rsize) = calibrate(rightdir)
 files = list(set(lfiles) & set(rfiles))
-print(files)
 def matchpoints(files, allfiles, objpoints, imgpoints):
     fileset = set(files)
     newobjpoints = []
