@@ -14,8 +14,8 @@ class StereoCalibration(object):
                              cv2.TERM_CRITERIA_MAX_ITER, 100, 1e-5)
 
         # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
-        self.objp = np.zeros((9 * 6, 3), np.float32)
-        self.objp[:, :2] = np.mgrid[0:9, 0:6].T.reshape(-1, 2)
+        self.objp = np.zeros((9 * 7, 3), np.float32)
+        self.objp[:, :2] = np.mgrid[0:9, 0:7].T.reshape(-1, 2)
 
         # Arrays to store object points and image points from all the images.
         self.objpoints = []  # 3d point in real world space
@@ -39,8 +39,8 @@ class StereoCalibration(object):
             gray_r = cv2.cvtColor(img_r, cv2.COLOR_BGR2GRAY)
 
             # Find the chess board corners
-            ret_l, corners_l = cv2.findChessboardCorners(gray_l, (9, 6), None)
-            ret_r, corners_r = cv2.findChessboardCorners(gray_r, (9, 6), None)
+            ret_l, corners_l = cv2.findChessboardCorners(gray_l, (9, 7), None)
+            ret_r, corners_r = cv2.findChessboardCorners(gray_r, (9, 7), None)
 
             # If found, add object points, image points (after refining them)
             self.objpoints.append(self.objp)
@@ -122,7 +122,6 @@ class StereoCalibration(object):
 
         cv2.destroyAllWindows()
         return camera_model
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
