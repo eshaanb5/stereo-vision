@@ -38,11 +38,16 @@ def right_coordinates(event, x, y, flags, param):
         elif rc == 1:
             rx2 = float(x)
             ry2 = float(y)
-            cv2.destroyWindow('right')
         rc += 1
         print((x, y))
 
 
+print(Q)
+
+
+
+#Q = numpy.array([[1., 0., 0., -1228.47],[0., 1., 0., -451.838],[0., 0., 0., 1390.31],[0., 0., 7.69789, 0.]])
+print(Q)
 cv2.namedWindow('left')
 cv2.namedWindow('right')
 cv2.setMouseCallback('left', left_coordinates)
@@ -54,6 +59,7 @@ cv2.waitKey(0)
 cv2.destroyWindow('left')
 cv2.imshow('right', fixedRight)
 cv2.waitKey(0)
+cv2.destroyWindow('right')
 
 
 points2d = numpy.array([[lx1, ly1, lx1-rx1, 1], [lx2, ly2, lx2-rx2, 1]], dtype=numpy.float32).T
@@ -71,4 +77,23 @@ z2 = points3d[2][1]/points3d[3][1]
 distance = numpy.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
 distance = distance
 print(distance)
+print([[x1, y1, z1],[x2, y2, z2]])
+points2d = numpy.array([[lx1, ly1, lx1-rx1], [lx2, ly2, lx2-rx2]], dtype=numpy.float32)
+
+
+points3d = cv2.perspectiveTransform(points2d[None, :, :], Q)
+x1 = points3d[0][0][0]
+y1 = points3d[0][0][1]
+z1 = points3d[0][0][2]
+
+x2 = points3d[0][1][0]
+y2 = points3d[0][1][1]
+z2 = points3d[0][1][2]
+
+
+distance = numpy.sqrt((x1-x2)**2 + (y1-y2)**2 + (z1-z2)**2)
+distance = distance
+print(distance)
+print(points3d)
+
 cv2.destroyAllWindows()

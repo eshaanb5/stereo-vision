@@ -7,12 +7,12 @@ import cv2
 import os
 import glob
 
-SIZE = (9, 6)
+SIZE = (9, 7)
 ALPHA = 0.25
 TERM_CRITERIA = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 OBJECT_POINT_ZERO = numpy.zeros((SIZE[0] * SIZE[1], 3), numpy.float32)
 OBJECT_POINT_ZERO[:, :2] = numpy.mgrid[0:SIZE[0], 0:SIZE[1]].T.reshape(-1, 2)
-OBJECT_POINT_ZERO = OBJECT_POINT_ZERO
+OBJECT_POINT_ZERO = OBJECT_POINT_ZERO# * 0.0235
 leftdir = sys.argv[1]
 rightdir = sys.argv[2]
 output = sys.argv[3]
@@ -20,6 +20,7 @@ output = sys.argv[3]
 def calibrate(dir):
     f = os.path.join(dir, "cache.npz")
     if os.path.exists(f):
+        print(f)
         cache = numpy.load(f)
         return (cache["files"], cache["objpoints"], cache["imgpoints"], cache["size"].tolist())
     
@@ -40,9 +41,10 @@ def calibrate(dir):
             imgpoints.append(corners)
             files.append(os.path.basename(image))
         cv2.drawChessboardCorners(img, SIZE, corners, check)
+        print(check)
+        print(image)
         cv2.imshow(dir, img)
         cv2.waitKey(1)
-    cv2.destroyWindow(dir)
     numpy.savez_compressed(f, files=files, objpoints=objpoints, imgpoints=imgpoints, size=size)
     return files, objpoints, imgpoints, size
 (lfiles, lobjpoints, limgpoints, lsize) = calibrate(leftdir)
@@ -67,8 +69,20 @@ objpoints = objpoints
 _, lcameramtx, ldist, _, _ = cv2.calibrateCamera(objpoints, limgpoints, size, None, None)
 _, rcameramtx, rdist, _, _ = cv2.calibrateCamera(objpoints, rimgpoints, size, None, None)
 (_, _, _, _, _, rotationmtx, translationv, E, F) = cv2.stereoCalibrate(objpoints, limgpoints, rimgpoints, lcameramtx, ldist, rcameramtx, rdist, size, None, None, None, None, cv2.CALIB_FIX_INTRINSIC, TERM_CRITERIA)
-
+print('E')
+print(E)
+print('F')
+print(F)
+print('T')
+print(translationv)
+print('R')
+print(rotationmtx)
+print('l')
+print(lcameramtx)
+print('r')
+print(rcameramtx)
 (lrectification, rrectification, lprojection, rprojection, Q, lroi, rroi) = cv2.stereoRectify(lcameramtx, ldist, rcameramtx, rdist, size, rotationmtx, translationv, None, None, None, None, None, cv2.CALIB_ZERO_DISPARITY, ALPHA)
+
 lmapx, lmapy = cv2.initUndistortRectifyMap(lcameramtx, ldist, lrectification,lprojection, size, cv2.CV_32FC1)
 rmapx, rmapy = cv2.initUndistortRectifyMap(rcameramtx, rdist, rrectification,rprojection, size, cv2.CV_32FC1)
 

@@ -19,7 +19,7 @@ rmapy = cache["rmapy"]
 
 stereoMatcher = cv2.StereoSGBM_create()
 stereoMatcher.setMinDisparity(4)
-stereoMatcher.setNumDisparities(256)
+stereoMatcher.setNumDisparities(128)
 stereoMatcher.setBlockSize(21)
 stereoMatcher.setSpeckleRange(16)
 stereoMatcher.setSpeckleWindowSize(45)
