@@ -7,12 +7,12 @@ import cv2
 import os
 import glob
 
-SIZE = (9, 7)
-ALPHA = 0.25
+SIZE = (9, 6)
+ALPHA = 0.5
 TERM_CRITERIA = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 OBJECT_POINT_ZERO = numpy.zeros((SIZE[0] * SIZE[1], 3), numpy.float32)
 OBJECT_POINT_ZERO[:, :2] = numpy.mgrid[0:SIZE[0], 0:SIZE[1]].T.reshape(-1, 2)
-OBJECT_POINT_ZERO = OBJECT_POINT_ZERO# * 0.0235
+OBJECT_POINT_ZERO = OBJECT_POINT_ZERO #* 5
 leftdir = sys.argv[1]
 rightdir = sys.argv[2]
 output = sys.argv[3]
@@ -50,6 +50,7 @@ def calibrate(dir):
 (lfiles, lobjpoints, limgpoints, lsize) = calibrate(leftdir)
 (rfiles, robjpoints, rimgpoints, rsize) = calibrate(rightdir)
 files = list(set(lfiles) & set(rfiles))
+print(files)
 def matchpoints(files, allfiles, objpoints, imgpoints):
     fileset = set(files)
     newobjpoints = []
@@ -86,6 +87,6 @@ print(rcameramtx)
 lmapx, lmapy = cv2.initUndistortRectifyMap(lcameramtx, ldist, lrectification,lprojection, size, cv2.CV_32FC1)
 rmapx, rmapy = cv2.initUndistortRectifyMap(rcameramtx, rdist, rrectification,rprojection, size, cv2.CV_32FC1)
 
-numpy.savez_compressed(output, size=size, lmapx=lmapx, lmapy=lmapy, lroi=lroi, rmapx=rmapx, rmapy=rmapy, rroi=rroi, Q=Q, F=F, E=E, lprojection=lprojection, rprojection=rprojection)
+numpy.savez_compressed(output, size=size, lmapx=lmapx, lmapy=lmapy, lroi=lroi, rmapx=rmapx, rmapy=rmapy, rroi=rroi, Q=Q, F=F, E=E, lprojection=lprojection, rprojection=rprojection, rdist=rdist, ldist=ldist, rcameramtx=rcameramtx, lcameramtx=lcameramtx, lrectification=lrectification, rrectification=rrectification)
 cv2.destroyAllWindows()
 

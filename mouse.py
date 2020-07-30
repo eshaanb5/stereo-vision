@@ -12,6 +12,21 @@ lmapx = cache["lmapx"]
 lmapy = cache["lmapy"]
 rmapx = cache["rmapx"]
 rmapy = cache["rmapy"]
+
+lcameramtx = cache["lcameramtx"]
+rcameramtx = cache["rcameramtx"]
+ldist = cache["ldist"]
+rdist = cache["rdist"]
+lrectification = cache["lrectification"]
+rrectification = cache["rrectification"]
+lprojection = cache["lprojection"]
+rprojection = cache["rprojection"]
+
+
+
+
+
+
 Q = cache["Q"]
 
 
@@ -52,14 +67,35 @@ cv2.namedWindow('left')
 cv2.namedWindow('right')
 cv2.setMouseCallback('left', left_coordinates)
 cv2.setMouseCallback('right', right_coordinates)
-fixedLeft = cv2.remap(limg, lmapx, lmapy, cv2.INTER_NEAREST)
-fixedRight = cv2.remap(rimg, rmapx, rmapy, cv2.INTER_NEAREST)
+print(limg)
+print('lmapx')
+print(lmapx)
+print(lmapy)
+fixedLeft = limg #cv2.remap(limg, lmapx, lmapy, cv2.INTER_NEAREST)
+print(fixedLeft)
+fixedRight = rimg #cv2.remap(rimg, rmapx, rmapy, cv2.INTER_NEAREST)
 cv2.imshow('left', fixedLeft)
 cv2.waitKey(0)
 cv2.destroyWindow('left')
 cv2.imshow('right', fixedRight)
 cv2.waitKey(0)
 cv2.destroyWindow('right')
+
+lpoints = numpy.array([[lx1, ly1], [lx2, ly2]], dtype=numpy.float32)
+rpoints = numpy.array([[rx1, ry1], [rx2, ry2]], dtype=numpy.float32)
+lpoints = cv2.undistortPoints(lpoints, lcameramtx, ldist, None, lrectification, lprojection)
+rpoints = cv2.undistortPoints(rpoints, rcameramtx, rdist, None, rrectification, rprojection)
+print(lpoints)
+
+lx1 = lpoints[0][0][0]
+ly1 = lpoints[0][0][1]
+lx2 = lpoints[1][0][0]
+ly2 = lpoints[1][0][1]
+rx1 = rpoints[0][0][0]
+ry1 = rpoints[0][0][1]
+rx2 = rpoints[1][0][0]
+ry2 = rpoints[1][0][1]
+
 
 
 points2d = numpy.array([[lx1, ly1, lx1-rx1, 1], [lx2, ly2, lx2-rx2, 1]], dtype=numpy.float32).T
